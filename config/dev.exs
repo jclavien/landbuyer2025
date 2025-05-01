@@ -1,7 +1,7 @@
 import Config
 
 # --- Affiche les variables d'environnement (pour debug si besoin) ---
-IO.inspect(System.get_env("DATABASE_URL"), label: "DATABASE_URL ENV")
+# IO.inspect(System.get_env("DATABASE_URL"), label: "DATABASE_URL ENV")
 
 # --- Configuration de la base de données ---
 config :landbuyer2025, Landbuyer2025.Repo,
@@ -13,7 +13,7 @@ config :landbuyer2025, Landbuyer2025.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
-IO.inspect(Application.get_env(:landbuyer2025, Landbuyer2025.Repo), label: "Repo config")
+#IO.inspect(Application.get_env(:landbuyer2025, Landbuyer2025.Repo), label: "Repo config")
 
 # --- Configuration de l'endpoint Phoenix ---
 config :landbuyer2025, Landbuyer2025Web.Endpoint,

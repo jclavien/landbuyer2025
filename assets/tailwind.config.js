@@ -14,9 +14,24 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        brand: "#FD4F00",
-      }
+        bg1: 'rgb(30 41 59)',       // slate-800
+        bg2: 'rgb(51 65 85)',       // slate-700
+        bg3: 'rgb(71 85 105)',      // slate-600
+        text: 'rgb(226 232 240)',   // slate-200
+        primary: 'rgb(14 165 233)', // sky-500
+        secondary: 'rgb(125 211 252)', // sky-300
+        green: 'rgb(22 163 74)',    // green-600
+        red: 'rgb(220 38 38)',      // red-600
+      },
+      fontFamily: {
+        sans: ['Segoe UI', 'sans-serif'],
+      },
+      borderRadius: {
+        DEFAULT: '0.25rem', // rounded
+      },
+      
     },
+
   },
   plugins: [
     require("@tailwindcss/forms"),
