@@ -1,39 +1,17 @@
-<header class="px-4 sm:px-6 lg:px-8">
-  <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
-    <div class="flex items-center gap-4">
-      <a href="/">
-        <img src={~p"/images/logo.svg"} width="36" />
-      </a>
-      <p class="bg-brand/5 text-brand rounded-full px-2 font-medium leading-6">
-        v{Application.spec(:phoenix, :vsn)}
-      </p>
-    </div>
-    <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
-      <a href="https://twitter.com/elixirphoenix" class="hover:text-zinc-700">
-        @elixirphoenix
-      </a>
-      <a href="https://github.com/phoenixframework/phoenix" class="hover:text-zinc-700">
-        GitHub
-      </a>
-      <a
-        href="https://hexdocs.pm/phoenix/overview.html"
-        class="rounded-lg bg-zinc-100 px-2 py-1 hover:bg-zinc-200/80"
-      >
-        Get Started <span aria-hidden="true">&rarr;</span>
-      </a>
-    </div>
-  </div>
-</header>
-<main class="min-h-screen bg-bg1 text-text font-sans p-4">
-  <h1 class="text-primary text-3xl mb-4">Ceci est un titre Primary</h1>
-  <p class="text-secondary mb-2">Ceci est un texte Secondary</p>
-  <p class="text-green mb-2">Ceci est un texte Green</p>
-  <p class="text-red mb-2">Ceci est un texte Red</p>
-  <div class="bg-bg2 rounded p-4 mb-4">
-    Bloc sur bg2 avec du texte normal
-  </div>
-  <div class="bg-bg3 rounded p-4">
-    Bloc sur bg3 avec du texte normal
-  </div>
-</main>
-
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landbuyer 2025</title>
+    <meta name="csrf-token" content={Plug.CSRFProtection.get_csrf_token()} />
+   <.live_title><%= assigns[:page_title] || "Landbuyer" %></.live_title>
+    <%= Phoenix.HTML.raw(@inner_content) %>
+  </head>
+  <body class="min-h-screen bg-slate-100">
+    <.dashboard_header />
+    <main role="main" class="p-4">
+      <%= @inner_content %>
+    </main>
+  </body>
+</html>

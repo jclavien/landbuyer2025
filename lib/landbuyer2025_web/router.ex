@@ -17,7 +17,8 @@ defmodule Landbuyer2025Web.Router do
   scope "/", Landbuyer2025Web do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", Live.DashboardLive, :index
+
   end
 
   # Other scopes may use custom stacks.

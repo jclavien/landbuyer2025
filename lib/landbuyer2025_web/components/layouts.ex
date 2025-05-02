@@ -10,5 +10,13 @@ defmodule Landbuyer2025Web.Layouts do
   """
   use Landbuyer2025Web, :html
 
+   # Ici on peut définir des composants réutilisables pour le layout
   embed_templates "layouts/*"
+  def dashboard_header(assigns) do
+    ~H"""
+    <header class="bg-bg1 text-slate-200 p-4">
+      <h1>Landbuyer 2025 Dashboard</h1>
+    </header>
+    """
+  end
 end
