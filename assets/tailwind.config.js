@@ -29,6 +29,14 @@ module.exports = {
       borderRadius: {
         DEFAULT: '0.25rem', // rounded
       },
+      safelist: [
+        {
+          pattern: /text-(slate|sky|blue|green|red|gray|amber|yellow|purple|pink|indigo)-[0-9]{3}/
+        },
+        {
+          pattern: /bg-(slate|sky|blue|green|red|gray|amber|yellow|purple|pink|indigo)-[0-9]{3}/
+        }
+      ],
       
     },
 
