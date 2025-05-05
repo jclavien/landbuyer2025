@@ -16,23 +16,28 @@ defmodule Landbuyer2025Web.Live.Dashboard.Accounts do
 
     ~H"""
     <div
-      phx-click="select_account"
-      phx-value-id={@account.id}
-      class={"p-4 m-2 rounded #{@bg_class} text-slate-200 hover:bg-slate-800 cursor-pointer"}>
-      <div class="flex items-center justify-between">
-      <div class="font-bold"><%= @account.name %></div>
-      <button
-        phx-click="close_account"
-        phx-value-id={@account.id}
-        class="grid place-content-center w-5 h-5 rounded bg-slate-800 hover:bg-slate-600">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-      </div>
-      <div class="text-slate-400 italic text-sm"><%= @account.display_id || "no id yet" %></div>
-      <div>NAV: 0.0</div>
-    </div>
+  phx-click="select_account"
+  phx-value-id={@account.id}
+  class={"relative w-72 p-2 m-2 rounded #{@bg_class} text-slate-200 hover:bg-slate-800 cursor-pointer"}>
+
+  <!-- bouton fermeture en haut à gauche en position absolue -->
+  <button
+    phx-click="close_account"
+    phx-value-id={@account.id}
+    phx-stop-propagation
+    class="absolute top-2 left-2 grid place-content-center w-5 h-5 rounded bg-slate-800 hover:bg-slate-600">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+
+  <!-- contenu décalé vers la droite -->
+  <div class="ml-8">
+    <div class="font-bold"><%= @account.name %></div>
+    <div class="text-slate-400 italic text-sm">ID: <%= @account.display_id || "no id yet" %></div>
+    <div>NAV: 0.0</div>
+  </div>
+</div>
     """
   end
 
