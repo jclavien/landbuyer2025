@@ -20,6 +20,7 @@ defmodule Landbuyer2025Web.Live.Dashboard.Accounts do
       phx-value-id={@account.id}
       class={"p-4 m-2 rounded #{@bg_class} text-slate-200 hover:bg-slate-800 cursor-pointer"}>
       <div class="font-bold"><%= @account.name %></div>
+      <div class="text-slate-400 italic text-sm"><%= @account.display_id || "no id yet" %></div>
       <div>NAV: 0.0</div>
     </div>
     """

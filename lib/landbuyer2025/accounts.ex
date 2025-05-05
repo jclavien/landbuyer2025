@@ -15,8 +15,33 @@ defmodule Landbuyer2025.Accounts do
   def get_account!(id), do: Repo.get!(Account, id)
 
   def create_account(attrs \\ %{}) do
+    next_display_id = get_next_display_id()
+
+    attrs = Map.put(attrs, :display_id, next_display_id)
+
     %Account{}
     |> Account.changeset(attrs)
     |> Repo.insert()
   end
+
+
+  defp get_next_display_id do
+    last_display_id =
+      from(a in Account,
+        where: not is_nil(a.display_id),
+        order_by: [desc: a.display_id],
+        limit: 1,
+        select: a.display_id
+      )
+      |> Repo.one()
+
+    next_id =
+      case last_display_id do
+        nil -> 1  # démarrer à 0010
+        val -> String.to_integer(val) + 1
+      end
+
+    String.pad_leading("#{next_id}", 4, "0")
+  end
+
 end
