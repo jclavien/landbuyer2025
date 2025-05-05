@@ -4,13 +4,10 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
   import Landbuyer2025Web.Footer
   import Landbuyer2025Web.Button
   import Landbuyer2025Web.Live.Dashboard.Accounts
+  alias Landbuyer2025.Accounts
 
   def mount(_params, _session, socket) do
-    accounts = [
-      %{id: 1, name: "LB USDCHF", nav: 1234.56},
-      %{id: 2, name: "LB EURJPY", nav: 5678.90}
-    ]
-
+    accounts = Landbuyer2025.Accounts.list_accounts()
     {:ok, assign(socket, accounts: accounts, selected_account: nil, show_form: false)}
   end
 
@@ -24,7 +21,22 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
 
   def handle_event("create_account", params, socket) do
     IO.inspect(params, label: "PARAMS REÇUS")
-    {:noreply, assign(socket, :show_form, false)}
+
+    case Accounts.create_account(%{
+      name: params["account_name"],
+      id_oanda: params["id_oanda"],
+      service: params["service"],
+      token: params["token"]
+    }) do
+      {:ok, _account} ->
+        # recharge la liste des comptes depuis la base
+        accounts = Accounts.list_accounts()
+        {:noreply, assign(socket, accounts: accounts, show_form: false)}
+
+      {:error, changeset} ->
+        IO.inspect(changeset, label: "ERREUR CHANGEMENT")
+        {:noreply, assign(socket, show_form: true)}
+    end
   end
 
   def render(assigns) do
