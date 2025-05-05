@@ -4,12 +4,16 @@
 const plugin = require("tailwindcss/plugin")
 const fs = require("fs")
 const path = require("path")
+const defaultTheme = require("tailwindcss/defaultTheme")
+const colors = require("tailwindcss/colors")
 
 module.exports = {
   content: [
     "./js/**/*.js",
     "../lib/landbuyer2025_web.ex",
-    "../lib/landbuyer2025_web/**/*.*ex"
+    "../lib/landbuyer2025_web/**/*.*ex",
+    "../lib/landbuyer2025_web/components/**/*.*ex", 
+    "../lib/landbuyer2025_web/live/dashboard/**/*.*ex" 
   ],
   theme: {
     extend: {
