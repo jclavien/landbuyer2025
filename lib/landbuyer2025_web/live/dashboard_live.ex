@@ -39,6 +39,13 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
     end
   end
 
+  def handle_event("close_account", %{"id" => id}, socket) do
+    id = String.to_integer(id)
+    Landbuyer2025.Accounts.close_account(id)
+    accounts = Landbuyer2025.Accounts.list_accounts()
+    {:noreply, assign(socket, accounts: accounts)}
+  end
+
   def render(assigns) do
     ~H"""
     <div class="min-h-screen flex flex-col bg-slate-700">

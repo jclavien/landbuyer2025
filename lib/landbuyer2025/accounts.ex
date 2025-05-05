@@ -9,8 +9,10 @@ defmodule Landbuyer2025.Accounts do
   alias Landbuyer2025.Accounts.Account
 
   def list_accounts do
-    Repo.all(Account)
+    from(a in Account, where: a.status == "active")
+    |> Repo.all()
   end
+
 
   def get_account!(id), do: Repo.get!(Account, id)
 
@@ -23,6 +25,19 @@ defmodule Landbuyer2025.Accounts do
     |> Account.changeset(attrs)
     |> Repo.insert()
   end
+
+  def close_account(id) do
+    account = Repo.get!(Account, id)
+    account
+    |> Ecto.Changeset.change(status: "closed")
+    |> Repo.update()
+  end
+
+  def list_accounts do
+    from(a in Account, where: a.status == "active")
+    |> Repo.all()
+  end
+
 
 
   defp get_next_display_id do
