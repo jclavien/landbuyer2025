@@ -53,7 +53,7 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
 
       <main class="flex flex-1">
         <!-- Colonne gauche -->
-        <div class="w-1/4 bg-slate-700 p-2 flex-col ml-8">
+        <div class="w-80 bg-slate-700 p-2 flex-col ml-8">
           <div
             phx-click="select_account"
             phx-value-id="overview"

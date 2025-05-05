@@ -16,28 +16,28 @@ defmodule Landbuyer2025Web.Live.Dashboard.Accounts do
 
     ~H"""
     <div
-  phx-click="select_account"
-  phx-value-id={@account.id}
-  class={"relative w-72 p-2 m-2 rounded #{@bg_class} text-slate-200 hover:bg-slate-800 cursor-pointer"}>
+      phx-click="select_account"
+      phx-value-id={@account.id}
+      class={"relative w-72 p-2 m-2 rounded #{@bg_class} text-slate-200 hover:bg-slate-800 cursor-pointer"}>
 
-  <!-- bouton fermeture en haut à gauche en position absolue -->
-  <button
-    phx-click="close_account"
-    phx-value-id={@account.id}
-    phx-stop-propagation
-    class="absolute top-2 left-2 grid place-content-center w-5 h-5 rounded bg-slate-800 hover:bg-slate-600">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  </button>
+        <!-- bouton fermeture en haut à gauche en position absolue -->
+        <button
+          phx-click="close_account"
+          phx-value-id={@account.id}
+          phx-stop-propagation
+          class="absolute top-2 left-2 grid place-content-center w-5 h-5 rounded bg-slate-800 hover:bg-slate-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
 
-  <!-- contenu décalé vers la droite -->
-  <div class="ml-8">
-    <div class="font-bold"><%= @account.name %></div>
-    <div class="text-slate-400 italic text-sm">ID: <%= @account.display_id || "no id yet" %></div>
-    <div>NAV: 0.0</div>
-  </div>
-</div>
+        <!-- contenu décalé vers la droite -->
+        <div class="ml-8">
+          <div class="font-bold"><%= @account.name %></div>
+          <div class="text-slate-400 italic text-sm">ID: <%= @account.display_id || "no id yet" %></div>
+          <div>NAV: 0.0</div>
+        </div>
+      </div>
     """
   end
 
@@ -46,19 +46,19 @@ defmodule Landbuyer2025Web.Live.Dashboard.Accounts do
     <form phx-submit="create_account" class="flex flex-col space-y-4 p-4 bg-slate-700 rounded text-slate-200">
       <div>
         <label class="block text-sm text-slate-200">Account Name</label>
-        <input type="text" name="account_name" class="w-full p-2 rounded bg-slate-200 text-slate-700"/>
+        <input type="text" name="account_name" placeholder="eg. LB USDCHF" class="w-full h-8 p-2 rounded bg-slate-200 text-slate-700 border border-slate-800 text-sm placeholder:italic placeholder-slate-400"/>
       </div>
       <div>
         <label class="block text-sm text-slate-200">ID Oanda</label>
-        <input type="text" name="id_oanda" class="w-full p-2 rounded bg-slate-200 text-slate-700"/>
+        <input type="text" name="id_oanda" class="w-full h-8 p-2 rounded bg-slate-200 text-slate-700"/>
       </div>
       <div>
         <label class="block text-sm text-slate-200">Service</label>
-        <input type="text" name="service" class="w-full p-2 rounded bg-slate-200 text-slate-700"/>
+        <input type="text" name="service" class="w-full h-8 p-2 rounded bg-slate-200 text-slate-700"/>
       </div>
       <div>
         <label class="block text-sm text-slate-200">Token</label>
-        <input type="text" name="token" class="w-full p-2 rounded bg-slate-200 text-slate-700"/>
+        <input type="text" name="token" class="w-full h-8 p-2 rounded bg-slate-200 text-slate-700"/>
       </div>
       <div class="flex justify-end">
         <button

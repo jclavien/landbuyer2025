@@ -1,37 +1,20 @@
 defmodule Landbuyer2025Web.Forms do
   use Phoenix.Component
 
-
-  def account_form(assigns) do
+  def text_input(assigns) do
     assigns =
-      assign_new(assigns, :changeset, fn ->
-        Ecto.Changeset.change(%{})
-      end)
+      assigns
+      |> assign_new(:type, fn -> "text" end)
+      |> assign_new(:value, fn -> "" end)
 
     ~H"""
-    <.form
-      for={@changeset}
-      phx-submit="save_account"
-      class="flex flex-col space-y-4"
-    >
-      <div>
-        <label class="block text-sm text-slate-200">Account Name</label>
-        <input type="text" name="account[name]" class="w-full p-2 rounded bg-slate-800 text-slate-200"/>
-      </div>
-      <div>
-        <label class="block text-sm text-slate-200">Oanda ID</label>
-        <input type="text" name="account[oanda_id]" class="w-full p-2 rounded bg-slate-800 text-slate-200"/>
-      </div>
-      <div>
-        <label class="block text-sm text-slate-200">Service</label>
-        <input type="text" name="account[service]" class="w-full p-2 rounded bg-slate-800 text-slate-200"/>
-      </div>
-      <div>
-        <label class="block text-sm text-slate-200">Token</label>
-        <input type="text" name="account[token]" class="w-full p-2 rounded bg-slate-800 text-slate-200"/>
-      </div>
-
-      </.form>
+    <input
+      type={@type}
+      name={@name}
+      value={@value}
+      placeholder={@placeholder}
+      class="w-full h-8 p-2 rounded bg-slate-200 text-slate-700 border border-slate-800 text-sm placeholder:italic placeholder-slate-400"
+    />
     """
   end
 end

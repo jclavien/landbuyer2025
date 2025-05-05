@@ -1,20 +1,17 @@
 defmodule Landbuyer2025.Accounts do
-  @moduledoc """
+    @moduledoc """
   The Accounts context.
   """
 
   import Ecto.Query, warn: false
   alias Landbuyer2025.Repo
-
   alias Landbuyer2025.Accounts.Account
 
-  def list_accounts do
-    from(a in Account, where: a.status == "active")
-    |> Repo.all()
-  end
-
-
   def get_account!(id), do: Repo.get!(Account, id)
+
+  def change_account(%Account{} = account \\ %Account{}) do
+    Account.changeset(account, %{})
+  end
 
   def create_account(attrs \\ %{}) do
     next_display_id = get_next_display_id()
