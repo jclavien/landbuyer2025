@@ -8,9 +8,21 @@
    <.live_title><%= assigns[:page_title] || "Landbuyer" %></.live_title>
     <%= Phoenix.HTML.raw(@inner_content) %>
   </head>
-  <body class="min-h-screen bg-slate-100">
+  <body class="min-h-screen bg-slate-200">
     <.dashboard_header />
     <main role="main" class="p-4">
+    <div class="fixed bottom-4 left-4 z-50">
+  <%= if Phoenix.Flash.get(@flash, :info) do %>
+    <div class="bg-green text-slate-200 p-2 rounded shadow">
+      <%= Phoenix.Flash.get(@flash, :info) %>
+    </div>
+  <% end %>
+  <%= if Phoenix.Flash.get(@flash, :error) do %>
+    <div class="bg-red text-slate-200 p-2 rounded shadow">
+      <%= Phoenix.Flash.get(@flash, :error) %>
+    </div>
+  <% end %>
+</div>
       <%= @inner_content %>
     </main>
   </body>

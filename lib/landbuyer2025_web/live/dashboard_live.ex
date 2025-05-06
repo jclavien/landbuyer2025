@@ -31,10 +31,19 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
       {:ok, _account} ->
         # recharge la liste des comptes depuis la base
         accounts = Accounts.list_accounts()
+
+        socket =
+          socket
+          |> put_flash(:info, "Account created successfully")
+
         {:noreply, assign(socket, accounts: accounts, show_form: false)}
 
       {:error, changeset} ->
-        IO.inspect(changeset, label: "ERREUR CHANGEMENT")
+
+        socket =
+          socket
+          |> put_flash(:error, "Error while creating account")
+
         {:noreply, assign(socket, show_form: true)}
     end
   end
@@ -43,8 +52,14 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
     id = String.to_integer(id)
     Landbuyer2025.Accounts.close_account(id)
     accounts = Landbuyer2025.Accounts.list_accounts()
+
+    socket =
+      socket
+      |> put_flash(:info, "Account #{id} closed successfully")
+
     {:noreply, assign(socket, accounts: accounts)}
   end
+
 
   def render(assigns) do
     ~H"""
@@ -103,9 +118,8 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
         </div>
       </main>
 
-      <.footer />
-    </div>
-    """
-  end
-
+      <.footer flash={@flash} />
+</div>
+  """
+end
 end
