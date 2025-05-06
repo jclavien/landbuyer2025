@@ -8,43 +8,97 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
 
   def mount(_params, _session, socket) do
     accounts = Landbuyer2025.Accounts.list_accounts()
-    {:ok, assign(socket, accounts: accounts, selected_account: nil, show_form: false)}
+    {:ok, assign(socket,
+      accounts: accounts,
+      selected_account: nil,
+      show_form: false,
+      account_name_error: nil,
+      id_oanda_error: nil,
+      service_error: nil,
+      token_error: nil,
+      account_name: "",
+      id_oanda: "",
+      service: "",
+      token: ""
+    )}
   end
 
   def handle_event("add_account", _params, socket) do
-    {:noreply, assign(socket, show_form: true)}
+    {:noreply, assign(socket,
+      show_form: true,
+      account_name: "",
+      id_oanda: "",
+      service: "",
+      token: ""
+    )}
   end
 
   def handle_event("close_form", _params, socket) do
-    {:noreply, assign(socket, show_form: false)}
+    {:noreply, assign(socket,
+      show_form: false,
+      account_name_error: nil,
+      id_oanda_error: nil,
+      service_error: nil,
+      token_error: nil,
+      account_name: "",
+      id_oanda: "",
+      service: "",
+      token: ""
+    )}
   end
 
   def handle_event("create_account", params, socket) do
     IO.inspect(params, label: "PARAMS REÇUS")
 
-    case Accounts.create_account(%{
-      name: params["account_name"],
-      id_oanda: params["id_oanda"],
-      service: params["service"],
-      token: params["token"]
-    }) do
-      {:ok, _account} ->
-        # recharge la liste des comptes depuis la base
-        accounts = Accounts.list_accounts()
+    account_name = String.trim(params["account_name"] || "")
+    id_oanda = String.trim(params["id_oanda"] || "")
+    service = String.trim(params["service"] || "")
+    token = String.trim(params["token"] || "")
 
-        socket =
-          socket
-          |> put_flash(:info, "Account created successfully")
+    errors = %{
+      account_name_error: if(account_name == "", do: "required", else: nil),
+      id_oanda_error: if(id_oanda == "", do: "required", else: nil),
+      service_error: if(service == "", do: "required", else: nil),
+      token_error: if(token == "", do: "required", else: nil)
+    }
 
-        {:noreply, assign(socket, accounts: accounts, show_form: false)}
+    if Enum.any?(Map.values(errors), & &1) do
+      # au moins une erreur → on garde le form ouvert et on montre les erreurs
+      socket =
+        socket
+        |> assign(:show_form, true)
+        |> assign(errors)
+        |> assign(%{
+          account_name: account_name,
+          id_oanda: id_oanda,
+          service: service,
+          token: token
+        })
+        |> put_flash(:error, "Please fill in all required fields")
 
-      {:error, changeset} ->
+      {:noreply, socket}
+    else
+      # pas d'erreur → on crée le compte
+      case Accounts.create_account(%{
+        name: account_name,
+        id_oanda: id_oanda,
+        service: service,
+        token: token
+      }) do
+        {:ok, _account} ->
+          accounts = Accounts.list_accounts()
+          {:noreply, assign(socket,
+            accounts: accounts,
+            show_form: false,
+            account_name_error: nil,
+            id_oanda_error: nil,
+            service_error: nil,
+            token_error: nil
+          ) |> put_flash(:info, "Account created successfully")}
 
-        socket =
-          socket
-          |> put_flash(:error, "Error while creating account")
-
-        {:noreply, assign(socket, show_form: true)}
+        {:error, changeset} ->
+          {:noreply, assign(socket, show_form: true) |> put_flash(:error, "Error while creating account")}
+      end
     end
   end
 
@@ -104,7 +158,17 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
           </div>
 
           <%= if @show_form do %>
-            <.add_account_form />
+          <.add_account_form
+            account_name_error={@account_name_error}
+            id_oanda_error={@id_oanda_error}
+            service_error={@service_error}
+            token_error={@token_error}
+            account_name={@account_name}
+            id_oanda={@id_oanda}
+            service={@service}
+            token={@token}
+          />
+
           <% else %>
             <%= for account <- @accounts do %>
               <.account account={account} selected_account={@selected_account} />
@@ -119,7 +183,7 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
       </main>
 
       <.footer flash={@flash} />
-</div>
+  </div>
   """
 end
 end

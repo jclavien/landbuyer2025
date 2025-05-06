@@ -1,5 +1,6 @@
 defmodule Landbuyer2025Web.Live.Dashboard.Accounts do
   use Phoenix.Component
+  import Landbuyer2025Web.Forms
 
   def account(assigns) do
     assigns =
@@ -46,19 +47,19 @@ defmodule Landbuyer2025Web.Live.Dashboard.Accounts do
     <form phx-submit="create_account" class="flex flex-col space-y-4 p-4 bg-slate-700 rounded text-slate-200">
       <div>
         <label class="block text-sm text-slate-200">Account Name</label>
-        <input type="text" name="account_name" placeholder="eg. LB USDCHF" class="w-full h-8 p-2 rounded bg-slate-200 text-slate-700 border border-slate-800 text-sm placeholder:italic placeholder-slate-400"/>
+        <.text_input name="account_name" value={@account_name} placeholder="eg. LB USDCHF" error={@account_name_error} />
       </div>
       <div>
         <label class="block text-sm text-slate-200">ID Oanda</label>
-        <input type="text" name="id_oanda" class="w-full h-8 p-2 rounded bg-slate-200 text-slate-700"/>
+        <.text_input name="id_oanda" value={@id_oanda} placeholder="..." error={@id_oanda_error} />
       </div>
       <div>
         <label class="block text-sm text-slate-200">Service</label>
-        <input type="text" name="service" class="w-full h-8 p-2 rounded bg-slate-200 text-slate-700"/>
+        <.text_input name="service" value={@service} placeholder="..." error={@service_error} />
       </div>
       <div>
         <label class="block text-sm text-slate-200">Token</label>
-        <input type="text" name="token" class="w-full h-8 p-2 rounded bg-slate-200 text-slate-700"/>
+        <.text_input name="token" value={@token} placeholder="..." error={@token_error} />
       </div>
       <div class="flex justify-end">
         <button
