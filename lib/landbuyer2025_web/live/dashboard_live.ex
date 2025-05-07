@@ -7,6 +7,7 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
   import Landbuyer2025Web.Live.Dashboard
 
   alias Landbuyer2025.Accounts
+  alias Landbuyer2025Web.FormData
 
   def mount(_params, _session, socket) do
     accounts = Landbuyer2025.Accounts.list_accounts()
@@ -14,14 +15,7 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
       accounts: accounts,
       selected_account: nil,
       show_form: false,
-      account_name_error: nil,
-      id_oanda_error: nil,
-      service_error: nil,
-      token_error: nil,
-      account_name: "",
-      id_oanda: "",
-      service: "",
-      token: ""
+      form_data: %FormData{}
     )}
   end
 
@@ -34,37 +28,24 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
         id = String.to_integer(id)
         Accounts.get_account!(id)
       end
-
     {:noreply, assign(socket, selected_account: selected_account)}
   end
 
   def handle_event("add_account", _params, socket) do
     {:noreply, assign(socket,
       show_form: true,
-      account_name: "",
-      id_oanda: "",
-      service: "",
-      token: ""
+      form_data: %FormData{}
     )}
   end
 
   def handle_event("close_form", _params, socket) do
     {:noreply, assign(socket,
-      show_form: false,
-      account_name_error: nil,
-      id_oanda_error: nil,
-      service_error: nil,
-      token_error: nil,
-      account_name: "",
-      id_oanda: "",
-      service: "",
-      token: ""
-    )}
+        show_form: false,
+        form_data: %FormData{}
+      )}
   end
 
   def handle_event("create_account", params, socket) do
-    IO.inspect(params, label: "PARAMS REÇUS")
-
     account_name = String.trim(params["account_name"] || "")
     id_oanda = String.trim(params["id_oanda"] || "")
     service = String.trim(params["service"] || "")
@@ -77,23 +58,25 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
       token_error: if(token == "", do: "required", else: nil)
     }
 
-    if Enum.any?(Map.values(errors), & &1) do
-      # au moins une erreur → on garde le form ouvert et on montre les erreurs
+    has_errors = Enum.any?(Map.values(errors), & &1)
+
+    form_data = %FormData{
+      account_name: account_name,
+      id_oanda: id_oanda,
+      service: service,
+      token: token
+    }
+    |> Map.merge(errors)
+
+    if has_errors do
       socket =
         socket
         |> assign(:show_form, true)
-        |> assign(errors)
-        |> assign(%{
-          account_name: account_name,
-          id_oanda: id_oanda,
-          service: service,
-          token: token
-        })
+        |> assign(:form_data, form_data)
         |> put_flash(:error, "Please fill in all required fields")
 
       {:noreply, socket}
     else
-      # pas d'erreur → on crée le compte
       case Accounts.create_account(%{
         name: account_name,
         id_oanda: id_oanda,
@@ -102,17 +85,20 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
       }) do
         {:ok, _account} ->
           accounts = Accounts.list_accounts()
-          {:noreply, assign(socket,
-            accounts: accounts,
-            show_form: false,
-            account_name_error: nil,
-            id_oanda_error: nil,
-            service_error: nil,
-            token_error: nil
-          ) |> put_flash(:info, "Account created successfully")}
+
+          socket =
+            socket
+            |> assign(:accounts, accounts)
+            |> assign(:show_form, false)
+            |> assign(:form_data, %FormData{})
+            |> put_flash(:info, "Account created successfully")
+
+          {:noreply, socket}
 
         {:error, changeset} ->
-          {:noreply, assign(socket, show_form: true) |> put_flash(:error, "Error while creating account")}
+          {:noreply,
+            assign(socket, :show_form, true)
+            |> put_flash(:error, "Error while creating account")}
       end
     end
   end
@@ -129,7 +115,6 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
     {:noreply, assign(socket, accounts: accounts)}
   end
 
-
   def render(assigns) do
     ~H"""
     <div class="min-h-screen flex flex-col bg-slate-700">
@@ -138,21 +123,10 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
       <main class="flex flex-1">
         <!-- Colonne gauche -->
         <div class="w-80 bg-slate-700 p-2 ml-8 mt-16">
-          <%
-            overview_bg_class =
-              if @selected_account == nil do
-                "bg-slate-800"
-              else
-                "bg-slate-600"
-              end
-          %>
-          <div
-            phx-click="select_account"
-            phx-value-id="overview"
-              class={"p-4 m-2 rounded #{overview_bg_class} text-slate-200 hover:scale-105 transition-transform duration-200 cursor-pointer"}>
-            <div class="font-bold text-2xl">Overview</div>
-            <div>NAV: 0.0</div>
-          </div>
+        <.account_block
+          account={:overview}
+          selected_account={@selected_account}
+        />
 
           <div class="flex items-center justify-between ml-4 mt-6 mr-2">
             <div class="text-slate-200 font-bold text-2xl">
@@ -181,21 +155,16 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
           </div>
 
           <%= if @show_form do %>
-          <.add_account_form
-            account_name_error={@account_name_error}
-            id_oanda_error={@id_oanda_error}
-            service_error={@service_error}
-            token_error={@token_error}
-            account_name={@account_name}
-            id_oanda={@id_oanda}
-            service={@service}
-            token={@token}
-          />
+          <.add_account_form form_data={@form_data} />
 
           <% else %>
-            <%= for account <- @accounts do %>
-              <.account account={account} selected_account={@selected_account} />
-            <% end %>
+          <%= for account <- @accounts do %>
+            <.account_block
+              account={account}
+              selected_account={@selected_account}
+              can_close={true}
+            />
+          <% end %>
           <% end %>
         </div>
 

@@ -7,9 +7,9 @@ defmodule Landbuyer2025Web.Footer do
       <p>© LANDBUYER 2025 by Yproky</p>
 
       <div class="fixed bottom-8 left-12 z-50 text-xs">
-        <%= if live_flash(@flash, :info) do %>
+        <%= if Phoenix.Flash.get(@flash, :info) do %>
           <div class="bg-green text-slate-200 p-1 rounded mb-2 w-72">
-            <%= live_flash(@flash, :info) %>
+            <%= Phoenix.Flash.get(@flash, :info) %>
           </div>
         <% end %>
 
