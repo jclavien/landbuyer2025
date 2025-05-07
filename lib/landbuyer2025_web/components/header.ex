@@ -3,7 +3,7 @@ defmodule Landbuyer2025Web.Header do
 
   def header(assigns) do
     ~H"""
-    <header class="flex mt-10 ml-6 h-24 px-4 border-b bg-slate-700 border-slate-700">
+    <header class="flex mt-10 ml-6 h-16 px-4 border-b bg-slate-700 border-slate-700">
 
         <svg
           xmlns="http://www.w3.org/2000/svg"

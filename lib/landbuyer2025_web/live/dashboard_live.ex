@@ -4,6 +4,8 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
   import Landbuyer2025Web.Footer
   import Landbuyer2025Web.Button
   import Landbuyer2025Web.Live.Dashboard.Accounts
+  import Landbuyer2025Web.Live.Dashboard
+
   alias Landbuyer2025.Accounts
 
   def mount(_params, _session, socket) do
@@ -21,6 +23,19 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
       service: "",
       token: ""
     )}
+  end
+
+  def handle_event("select_account", %{"id" => id}, socket) do
+    # On vérifie si c’est “overview” ou un ID numérique
+    selected_account =
+      if id == "overview" do
+        nil
+      else
+        id = String.to_integer(id)
+        Accounts.get_account!(id)
+      end
+
+    {:noreply, assign(socket, selected_account: selected_account)}
   end
 
   def handle_event("add_account", _params, socket) do
@@ -122,11 +137,19 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
 
       <main class="flex flex-1">
         <!-- Colonne gauche -->
-        <div class="w-80 bg-slate-700 p-2 flex-col ml-8">
+        <div class="w-80 bg-slate-700 p-2 ml-8 mt-16">
+          <%
+            overview_bg_class =
+              if @selected_account == nil do
+                "bg-slate-800"
+              else
+                "bg-slate-600"
+              end
+          %>
           <div
             phx-click="select_account"
             phx-value-id="overview"
-            class={"p-4 m-2 rounded bg-slate-800 text-slate-200 hover:bg-slate-600 cursor-pointer"}>
+              class={"p-4 m-2 rounded #{overview_bg_class} text-slate-200 hover:scale-105 transition-transform duration-200 cursor-pointer"}>
             <div class="font-bold text-2xl">Overview</div>
             <div>NAV: 0.0</div>
           </div>
@@ -177,9 +200,13 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
         </div>
 
         <!-- Contenu principal -->
-        <div class="flex-1 p-4 text-slate-200">
-          Bienvenue sur le Dashboard
-        </div>
+      <div class="flex-1 p-4 text-slate-200">
+        <%= if @selected_account do %>
+          <.account_panel account={@selected_account} />
+        <% else %>
+          <.overview_panel />
+        <% end %>
+      </div>
       </main>
 
       <.footer flash={@flash} />

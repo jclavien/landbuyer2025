@@ -18,7 +18,7 @@ defmodule Landbuyer2025Web.Forms do
     assigns = assign(assigns, :border_class, border_class)
 
     ~H"""
-    <div>
+      <div>
       <input
         type={@type}
         name={@name}
@@ -26,9 +26,9 @@ defmodule Landbuyer2025Web.Forms do
         placeholder={@placeholder}
         class={"w-full h-8 p-2 rounded bg-slate-200 text-slate-700 border #{@border_class} text-sm placeholder:italic placeholder-slate-400"}
       />
-      <%= if @error do %>
-        <div class="text-red text-xs mt-1"><%= @error %></div>
-      <% end %>
+      <div class={"text-red text-xs mt-1 min-h-[1rem]"}>
+        <%= @error %>
+      </div>
     </div>
     """
   end
