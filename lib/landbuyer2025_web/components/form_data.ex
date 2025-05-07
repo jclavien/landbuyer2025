@@ -1,4 +1,4 @@
-defmodule Landbuyer2025Web.FormData do
+defmodule Landbuyer2025Web.AccountFormData do
   defstruct account_name: "",
             id_oanda: "",
             service: "",

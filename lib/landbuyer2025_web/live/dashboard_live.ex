@@ -6,8 +6,9 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
   import Landbuyer2025Web.Live.Dashboard.Accounts
   import Landbuyer2025Web.Live.Dashboard
 
+
   alias Landbuyer2025.Accounts
-  alias Landbuyer2025Web.FormData
+  alias Landbuyer2025Web.AccountFormData
 
   def mount(_params, _session, socket) do
     accounts = Landbuyer2025.Accounts.list_accounts()
@@ -15,7 +16,7 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
       accounts: accounts,
       selected_account: nil,
       show_form: false,
-      form_data: %FormData{}
+      form_data: %AccountFormData{}
     )}
   end
 
@@ -34,14 +35,14 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
   def handle_event("add_account", _params, socket) do
     {:noreply, assign(socket,
       show_form: true,
-      form_data: %FormData{}
+      form_data: %AccountFormData{}
     )}
   end
 
   def handle_event("close_form", _params, socket) do
     {:noreply, assign(socket,
         show_form: false,
-        form_data: %FormData{}
+        form_data: %AccountFormData{}
       )}
   end
 
@@ -60,7 +61,7 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
 
     has_errors = Enum.any?(Map.values(errors), & &1)
 
-    form_data = %FormData{
+    form_data = %AccountFormData{
       account_name: account_name,
       id_oanda: id_oanda,
       service: service,
@@ -90,15 +91,16 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
             socket
             |> assign(:accounts, accounts)
             |> assign(:show_form, false)
-            |> assign(:form_data, %FormData{})
+            |> assign(:form_data, %AccountFormData{})
             |> put_flash(:info, "Account created successfully")
 
           {:noreply, socket}
 
-        {:error, changeset} ->
-          {:noreply,
-            assign(socket, :show_form, true)
-            |> put_flash(:error, "Error while creating account")}
+          {:error, changeset} ->
+            {:noreply,
+              assign(socket, :show_form, true)
+              |> put_flash(:error, "Error while creating account: #{inspect(changeset.errors)}")}
+
       end
     end
   end
@@ -122,7 +124,7 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
 
       <main class="flex flex-1">
         <!-- Colonne gauche -->
-        <div class="w-80 bg-slate-700 p-2 ml-8 mt-16">
+        <div class="bg-slate-700 p-2 ml-8 mt-16" style="width: 19rem">
         <.account_block
           account={:overview}
           selected_account={@selected_account}

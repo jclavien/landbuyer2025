@@ -4,7 +4,7 @@ defmodule Landbuyer2025Web.Live.Dashboard do
   def overview_panel(assigns) do
     ~H"""
     <div class="w-full h-full bg-slate-800 rounded p-6">
-      <h1 class="text-2xl font-bold">Overview</h1>
+      <h1 class="text-2xl font-bold">OVERVIEW</h1>
       <div class="mt-4">
         Vue globale : NAV total, nombre de comptes, résumé des performances...
       </div>
