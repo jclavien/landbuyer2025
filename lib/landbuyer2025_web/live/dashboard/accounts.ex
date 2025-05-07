@@ -20,7 +20,7 @@ defmodule Landbuyer2025Web.Live.Dashboard.Accounts do
 
       assigns = assign(assigns, :bg_class,
       if is_selected do
-        "bg-slate-800 rounded rounded-r-none -mr-2 translate-x-8 scale-105"
+        "bg-slate-800 rounded rounded-r-none -mr-2 translate-x-5 scale-105"
       else
         "bg-slate-600 rounded"
       end

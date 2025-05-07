@@ -5,6 +5,7 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
   import Landbuyer2025Web.Button
   import Landbuyer2025Web.Live.Dashboard.Accounts
   import Landbuyer2025Web.Live.Dashboard
+  import Landbuyer2025Web.Live.Dashboard.Strategies
 
 
   alias Landbuyer2025.Accounts
