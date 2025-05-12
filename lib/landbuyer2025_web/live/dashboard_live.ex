@@ -4,12 +4,16 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
   import Landbuyer2025Web.Footer
   import Landbuyer2025Web.Button
   import Landbuyer2025Web.Live.Dashboard.Accounts
+  import Landbuyer2025Web.Live.Dashboard.Results
+  import Landbuyer2025Web.Live.Dashboard.Graphs
   import Landbuyer2025Web.Live.Dashboard
-  import Landbuyer2025Web.Live.Dashboard.Strategies
+
 
 
   alias Landbuyer2025.Accounts
-  alias Landbuyer2025Web.AccountFormData
+  alias Landbuyer2025Web.FormData
+  alias Landbuyer2025Web.FormValidator
+
 
   def mount(_params, _session, socket) do
     accounts = Landbuyer2025.Accounts.list_accounts()
@@ -17,9 +21,30 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
       accounts: accounts,
       selected_account: nil,
       show_form: false,
-      form_data: %AccountFormData{}
+      account_form_data: %FormData.Account{},
+      strategy_form_data: %FormData.Strategy{}
+
     )}
   end
+
+def handle_event("add_strategy", _params, socket) do
+  {:noreply, assign(socket,
+    show_strategy_form: true,
+    strategy_form_data: %FormData.Strategy{}
+  )}
+end
+
+def handle_event("create_strategy", _params, socket) do
+  IO.puts("Création stratégie reçue !")
+  {:noreply, socket}
+end
+
+def handle_event("close_strategy_form", _params, socket) do
+  {:noreply, assign(socket,
+    show_strategy_form: false,
+    strategy_form_data: %FormData.Strategy{}
+  )}
+end
 
   def handle_event("select_account", %{"id" => id}, socket) do
     # On vérifie si c’est “overview” ou un ID numérique
@@ -30,20 +55,26 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
         id = String.to_integer(id)
         Accounts.get_account!(id)
       end
-    {:noreply, assign(socket, selected_account: selected_account)}
+      {:noreply,
+      assign(socket,
+        selected_account: selected_account,
+        show_strategy_form: false,
+        strategy_form_data: %FormData.Strategy{}
+      )}
+
   end
 
   def handle_event("add_account", _params, socket) do
     {:noreply, assign(socket,
       show_form: true,
-      form_data: %AccountFormData{}
+      account_form_data: %FormData.Account{}
     )}
   end
 
   def handle_event("close_form", _params, socket) do
     {:noreply, assign(socket,
         show_form: false,
-        form_data: %AccountFormData{}
+        account_form_data: %FormData.Account{}
       )}
   end
 
@@ -53,16 +84,11 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
     service = String.trim(params["service"] || "")
     token = String.trim(params["token"] || "")
 
-    errors = %{
-      account_name_error: if(account_name == "", do: "required", else: nil),
-      id_oanda_error: if(id_oanda == "", do: "required", else: nil),
-      service_error: if(service == "", do: "required", else: nil),
-      token_error: if(token == "", do: "required", else: nil)
-    }
+    errors = FormValidator.validate_required_fields(params, ["account_name", "id_oanda", "service", "token"])
 
     has_errors = Enum.any?(Map.values(errors), & &1)
 
-    form_data = %AccountFormData{
+    account_form_data = %FormData.Account{
       account_name: account_name,
       id_oanda: id_oanda,
       service: service,
@@ -74,8 +100,8 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
       socket =
         socket
         |> assign(:show_form, true)
-        |> assign(:form_data, form_data)
-        |> put_flash(:error, "Please fill in all required fields")
+        |> assign(:account_form_data, account_form_data)
+        |> put_flash(:error, "Please complete all required fields")
 
       {:noreply, socket}
     else
@@ -92,7 +118,7 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
             socket
             |> assign(:accounts, accounts)
             |> assign(:show_form, false)
-            |> assign(:form_data, %AccountFormData{})
+            |> assign(:account_form_data, %FormData.Account{})
             |> put_flash(:info, "Account created successfully")
 
           {:noreply, socket}
@@ -125,14 +151,15 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
 
       <main class="flex flex-1">
         <!-- Colonne gauche -->
-        <div class="bg-slate-700 p-2 ml-8 mt-16" style="width: 19rem">
+        <div class="bg-slate-700 p-2 ml-8 mt-16" style="width: 20rem">
         <.account_block
           account={:overview}
           selected_account={@selected_account}
         />
 
-          <div class="flex items-center justify-between ml-4 mt-6 mr-2">
-            <div class="text-slate-200 font-bold text-2xl">
+          <div class="flex items-center justify-between mt-14 ml-2 mr-2">
+          <div class="text-slate-200 font-bold text-2xl ml-1">
+
               <%= if @show_form do %>
                 Add account
               <% else %>
@@ -158,7 +185,7 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
           </div>
 
           <%= if @show_form do %>
-          <.add_account_form form_data={@form_data} />
+          <.add_account_form account_form_data={@account_form_data} />
 
           <% else %>
           <%= for account <- @accounts do %>
@@ -172,9 +199,13 @@ defmodule Landbuyer2025Web.Live.DashboardLive do
         </div>
 
         <!-- Contenu principal -->
-      <div class="flex-1 p-4 text-slate-200">
+      <div class="flex-1 text-slate-200">
         <%= if @selected_account do %>
-          <.account_panel account={@selected_account} />
+        <.account_panel
+          account={@selected_account}
+          show_strategy_form={@show_strategy_form}
+          strategy_form_data={@strategy_form_data}
+        />
         <% else %>
           <.overview_panel />
         <% end %>

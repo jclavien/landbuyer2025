@@ -56,7 +56,9 @@ defmodule Landbuyer2025.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:httpoison, "~> 1.8"},
+      {:poison, "~> 5.0"}
     ]
   end
 
