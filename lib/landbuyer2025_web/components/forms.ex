@@ -24,10 +24,10 @@ defmodule Landbuyer2025Web.Forms do
         name={@name}
         value={@value}
         placeholder={@placeholder}
-        class={"w-full h-8 p-2 rounded bg-slate-200 text-slate-700 border #{@border_class} text-sm placeholder:italic placeholder-slate-400"}
+        class={"w-full h-8 p-2 rounded bg-slate-200 text-slate-700 border #{@border_class} text-sm placeholder:italic placeholder-slate-400 placeholder:text-xs"}
       />
       <div class="text-red text-xs mt-1 min-h-[1rem]">
-        <%= if @error, do: @error, else: "" %>
+        {if @error, do: @error, else: ""}
       </div>
     </div>
     """

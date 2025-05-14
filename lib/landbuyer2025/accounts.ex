@@ -16,7 +16,7 @@ defmodule Landbuyer2025.Accounts do
   def create_account(attrs \\ %{}) do
     next_display_id = get_next_display_id()
 
-    attrs = Map.put(attrs, :display_id, next_display_id)
+    attrs = Map.put(attrs, :account_display_id, next_display_id)
 
     %Account{}
     |> Account.changeset(attrs)
@@ -35,25 +35,23 @@ defmodule Landbuyer2025.Accounts do
     |> Repo.all()
   end
 
+    defp get_next_display_id do
+      last_display_id =
+        from(a in Account,
+          where: not is_nil(a.account_display_id),
+          order_by: [desc: a.account_display_id],
+          limit: 1,
+          select: a.account_display_id
+        )
+        |> Repo.one()
 
+      next_id =
+        case last_display_id do
+          nil -> 1
+          "A" <> rest -> String.to_integer(rest) + 1
+        end
 
-  defp get_next_display_id do
-    last_display_id =
-      from(a in Account,
-        where: not is_nil(a.display_id),
-        order_by: [desc: a.display_id],
-        limit: 1,
-        select: a.display_id
-      )
-      |> Repo.one()
-
-    next_id =
-      case last_display_id do
-        nil -> 1  # démarrer à 0010
-        val -> String.to_integer(val) + 1
-      end
-
-    String.pad_leading("#{next_id}", 4, "0")
-  end
+      "A" <> String.pad_leading("#{next_id}", 4, "0")
+    end
 
 end

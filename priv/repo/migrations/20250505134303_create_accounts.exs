@@ -3,7 +3,7 @@ defmodule Landbuyer2025.Repo.Migrations.CreateAccounts do
 
   def change do
     create table(:accounts) do
-      add :display_id, :string
+      add :account_display_id, :string
       add :name, :string
       add :id_oanda, :string
       add :service, :string
@@ -13,6 +13,6 @@ defmodule Landbuyer2025.Repo.Migrations.CreateAccounts do
       timestamps()
     end
 
-    create unique_index(:accounts, [:display_id])
+    create unique_index(:accounts, [:account_display_id])
   end
 end

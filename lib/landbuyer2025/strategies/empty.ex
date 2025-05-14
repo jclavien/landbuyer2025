@@ -1,4 +1,4 @@
-defmodule Landbuyer.Strategies.Empty do
+defmodule Landbuyer2025.Strategies.Empty do
   @moduledoc """
   Empty strategy.
 
@@ -6,17 +6,15 @@ defmodule Landbuyer.Strategies.Empty do
   for gen_server and supervisor behaviours.
   """
 
-  @behaviour Landbuyer.Strategies.Strategies
+  #  @behaviour Landbuyer2025.Strategies
 
-  alias Landbuyer.Schemas.Account
-  alias Landbuyer.Schemas.Trader
-  alias Landbuyer.Strategies.Strategies
+  alias Landbuyer2025.Accounts.Account
 
   @spec key() :: atom()
   def key, do: :empty
 
   @spec name() :: String.t()
-  def name, do: "Select a strategy"
+  def name, do: "Select"
 
   @spec run(Account.t(), Trader.t()) :: Strategies.events()
   def run(_account, _trader) do

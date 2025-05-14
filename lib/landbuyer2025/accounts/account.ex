@@ -3,7 +3,7 @@ defmodule Landbuyer2025.Accounts.Account do
   import Ecto.Changeset
 
   schema "accounts" do
-    field :display_id, :string
+    field :account_display_id, :string
     field :name, :string
     field :id_oanda, :string
     field :service, :string
@@ -16,8 +16,8 @@ defmodule Landbuyer2025.Accounts.Account do
   @doc false
   def changeset(account, attrs) do
     account
-    |> cast(attrs, [:display_id, :name, :id_oanda, :service, :token, :status])
+    |> cast(attrs, [:account_display_id, :name, :id_oanda, :service, :token, :status])
     |> validate_required([:name, :id_oanda, :service, :token])
-    |> unique_constraint(:display_id)
+    |> unique_constraint(:account_display_id)
   end
 end

@@ -49,7 +49,7 @@ defmodule Landbuyer2025Web.Live.Dashboard.Accounts do
       <div class={"#{if @can_close, do: "ml-9", else: "ml-2"}"}>
         <div class="font-bold text-xl"><%= @account_title %></div>
         <div class="text-slate-400 italic text-xs">
-          <%= if @account == :overview, do: "CHF", else: "A#{@account.display_id || "no id yet"}" %>
+          <%= if @account == :overview, do: "CHF", else: "#{@account.account_display_id || "no id yet"}" %>
         </div>
         <div class="font-bold ml-10">NAV: <%= @nav %></div>
          <div class="font-bold ml-10">P&L: <%= @nav %></div>
