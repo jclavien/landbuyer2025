@@ -1,13 +1,15 @@
 defmodule Landbuyer2025Web.Forms do
   use Phoenix.Component
 
-  def text_input(assigns) do
-    assigns =
-      assigns
-      |> assign_new(:type, fn -> "text" end)
-      |> assign_new(:value, fn -> "" end)
-      |> assign_new(:error, fn -> nil end)
+  attr :type, :string, default: "text"
+  attr :value, :string, default: ""
+  attr :error, :string, default: nil
+  attr :name, :string, required: true
+  attr :placeholder, :string, default: ""
+  attr :disabled, :boolean, default: false
+  attr :class, :string, default: ""
 
+  def text_input(assigns) do
     border_class =
       if assigns.error do
         "border-red"
@@ -24,9 +26,15 @@ defmodule Landbuyer2025Web.Forms do
         name={@name}
         value={@value}
         placeholder={@placeholder}
-        class={"w-full h-8 p-2 rounded bg-slate-200 text-slate-700 border #{@border_class} text-sm placeholder:italic placeholder-slate-400 placeholder:text-xs"}
+        disabled={@disabled}
+        class={[
+          "w-full h-8 p-2 rounded bg-slate-200 text-slate-700 border",
+          @border_class,
+          "text-sm placeholder:italic placeholder-slate-400 placeholder:text-xs",
+          @class
+        ]}
       />
-      <div class="text-red text-xs mt-1 min-h-[1rem]">
+      <div class="text-red text-xs">
         {if @error, do: @error, else: ""}
       </div>
     </div>

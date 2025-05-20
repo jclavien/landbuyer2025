@@ -5,6 +5,8 @@ defmodule Landbuyer2025.Strategies do
   alias Landbuyer2025.Repo
   # alias Landbuyer2025.Accounts.Account
   alias Landbuyer2025.Strategies.Strategy
+  alias Landbuyer2025.Strategies.StrategySnapshot
+  alias Landbuyer2025.Repo
 
   # === REGISTRE DES STRATEGIES DISPONIBLES (modules de logique métier) ===
 
@@ -30,11 +32,17 @@ defmodule Landbuyer2025.Strategies do
 
   def get_latest_strategy_for_account(account_id) do
     from(s in Landbuyer2025.Strategies.Strategy,
-      where: s.account_id == ^account_id,
+      where: s.account_id == ^account_id and s.status != "deleted",
       order_by: [desc: s.inserted_at],
       limit: 1
     )
     |> Landbuyer2025.Repo.one()
+  end
+
+  def update_strategy(%Strategy{} = strategy, attrs) do
+    strategy
+    |> Strategy.changeset(attrs)
+    |> Repo.update()
   end
 
   def create_strategy(attrs \\ %{}) do
@@ -68,5 +76,25 @@ defmodule Landbuyer2025.Strategies do
       end
 
     "S" <> String.pad_leading("#{next_id}", 4, "0")
+  end
+
+  def snapshot_strategy(%Strategy{} = strategy) do
+    %StrategySnapshot{}
+    |> StrategySnapshot.changeset(%{
+      strategy_id: strategy.id,
+      strategy_display_id: strategy.strategy_display_id,
+      strategy_name: strategy.strategy_name,
+      interval: strategy.interval,
+      currency_pair: strategy.currency_pair,
+      decimals: strategy.decimals,
+      take_profit: strategy.take_profit,
+      stop_loss: strategy.stop_loss,
+      distance: strategy.distance,
+      order_size: strategy.order_size,
+      max_orders: strategy.max_orders,
+      direction: strategy.direction,
+      status: strategy.status
+    })
+    |> Repo.insert()
   end
 end

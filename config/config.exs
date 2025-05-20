@@ -68,6 +68,10 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :landbuyer2025, Landbuyer2025.Encryption,
+  # clé temporaire (base64)
+  key: System.get_env("ENCRYPTION_KEY") || "S4qEOG7JUihY8NFLp3yLEkkhsMOH0u8K2F8FmDE9SUg="
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

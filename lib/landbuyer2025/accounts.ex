@@ -1,5 +1,5 @@
 defmodule Landbuyer2025.Accounts do
-    @moduledoc """
+  @moduledoc """
   The Accounts context.
   """
 
@@ -16,7 +16,14 @@ defmodule Landbuyer2025.Accounts do
   def create_account(attrs \\ %{}) do
     next_display_id = get_next_display_id()
 
-    attrs = Map.put(attrs, :account_display_id, next_display_id)
+    encrypted_token =
+      attrs[:token]
+      |> Landbuyer2025.Encryption.encrypt()
+
+    attrs =
+      attrs
+      |> Map.put(:account_display_id, next_display_id)
+      |> Map.put(:token, encrypted_token)
 
     %Account{}
     |> Account.changeset(attrs)
@@ -25,6 +32,7 @@ defmodule Landbuyer2025.Accounts do
 
   def close_account(id) do
     account = Repo.get!(Account, id)
+
     account
     |> Ecto.Changeset.change(status: "closed")
     |> Repo.update()
@@ -35,23 +43,22 @@ defmodule Landbuyer2025.Accounts do
     |> Repo.all()
   end
 
-    defp get_next_display_id do
-      last_display_id =
-        from(a in Account,
-          where: not is_nil(a.account_display_id),
-          order_by: [desc: a.account_display_id],
-          limit: 1,
-          select: a.account_display_id
-        )
-        |> Repo.one()
+  defp get_next_display_id do
+    last_display_id =
+      from(a in Account,
+        where: not is_nil(a.account_display_id),
+        order_by: [desc: a.account_display_id],
+        limit: 1,
+        select: a.account_display_id
+      )
+      |> Repo.one()
 
-      next_id =
-        case last_display_id do
-          nil -> 1
-          "A" <> rest -> String.to_integer(rest) + 1
-        end
+    next_id =
+      case last_display_id do
+        nil -> 1
+        "A" <> rest -> String.to_integer(rest) + 1
+      end
 
-      "A" <> String.pad_leading("#{next_id}", 4, "0")
-    end
-
+    "A" <> String.pad_leading("#{next_id}", 4, "0")
+  end
 end

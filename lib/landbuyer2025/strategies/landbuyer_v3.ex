@@ -15,6 +15,10 @@ defmodule Landbuyer2025.Strategies.LandbuyerV3 do
   alias Landbuyer2025.Accounts.Account
   alias Landbuyer2025.Strategies.Strategy
 
+  defp decrypted_token(account) do
+    Landbuyer2025.Encryption.decrypt(account.token)
+  end
+
   @spec key() :: atom()
   def key, do: :landbuyer_v3
 
@@ -34,7 +38,7 @@ defmodule Landbuyer2025.Strategies.LandbuyerV3 do
     baseurl = "https://#{account.hostname}/v3/accounts/#{account.id_oanda}"
 
     url = "#{baseurl}/pricing?instruments=#{strategy.currency_pair}"
-    headers = [{"Authorization", "Bearer #{account.token}"}]
+    headers = [{"Authorization", "Bearer #{decrypted_token(account)}"}]
     options = [timeout: strategy.interval]
 
     with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
@@ -52,7 +56,7 @@ defmodule Landbuyer2025.Strategies.LandbuyerV3 do
     baseurl = "https://#{account.hostname}/v3/accounts/#{account.id_oanda}"
 
     url = "#{baseurl}/orders?state=PENDING&instrument=#{strategy.currency_pair}&count=500"
-    headers = [{"Authorization", "Bearer #{account.token}"}]
+    headers = [{"Authorization", "Bearer #{decrypted_token(account)}"}]
     options = [timeout: strategy.interval]
 
     with {:ok, %HTTPoison.Response{status_code: 200, body: body}} <-
@@ -194,7 +198,7 @@ defmodule Landbuyer2025.Strategies.LandbuyerV3 do
       method: :post,
       url: "https://#{account.hostname}/v3/accounts/#{account.id_oanda}/orders",
       headers: [
-        {"Authorization", "Bearer #{account.token}"},
+        {"Authorization", "Bearer #{decrypted_token(account)}"},
         {"Content-Type", "application/json"}
       ],
       options: [timeout: strategy.interval],

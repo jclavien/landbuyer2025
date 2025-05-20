@@ -32,5 +32,21 @@ defmodule Landbuyer2025Web.FormData do
               order_size_error: nil,
               max_orders_error: nil,
               direction_error: nil
+
+    def from_strategy(strategy) do
+      %__MODULE__{
+        account_id: strategy.account_id,
+        strategy_name: strategy.strategy_name,
+        interval: to_string(strategy.interval),
+        currency_pair: strategy.currency_pair,
+        decimals: to_string(strategy.decimals),
+        take_profit: to_string(strategy.take_profit),
+        stop_loss: to_string(strategy.stop_loss),
+        distance: to_string(strategy.distance),
+        order_size: to_string(strategy.order_size),
+        max_orders: to_string(strategy.max_orders),
+        direction: strategy.direction
+      }
+    end
   end
 end
