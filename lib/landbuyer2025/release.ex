@@ -4,12 +4,15 @@ defmodule Landbuyer2025.Release do
   def migrate do
     IO.puts("🔄 Démarrage des migrations...")
 
+    # Charge l'application
     Application.load(:landbuyer2025)
 
+    # Démarre toutes les dépendances nécessaires
+    {:ok, _} = Application.ensure_all_started(:landbuyer2025)
+
+    # Récupère les repos Ecto et applique les migrations
     for repo <- Application.fetch_env!(:landbuyer2025, :ecto_repos) do
       IO.puts("🚀 Lancement de la migration pour #{inspect(repo)}")
-      {:ok, _} = repo.start_link(pool_size: 2)
-      IO.puts("✅ Repo démarré, lancement des migrations...")
       Ecto.Migrator.run(repo, migrations_path(repo), :up, all: true)
     end
 
