@@ -7,8 +7,9 @@ config :landbuyer2025, Landbuyer2025Web.Endpoint,
   http: [
     ip: {0, 0, 0, 0, 0, 0, 0, 0},
     port: String.to_integer(System.get_env("PORT") || "4000")
-  ],
-  secret_key_base: System.fetch_env!("SECRET_KEY_BASE")
+  ]
+
+# secret_key_base: System.fetch_env!("SECRET_KEY_BASE")
 
 # Swoosh configuration
 config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: Landbuyer2025.Finch
