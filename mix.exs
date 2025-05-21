@@ -19,7 +19,7 @@ defmodule Landbuyer2025.MixProject do
   def application do
     [
       mod: {Landbuyer2025.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :ecto_sql]
     ]
   end
 
